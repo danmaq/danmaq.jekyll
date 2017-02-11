@@ -1,0 +1,6 @@
+#!/bin/sh
+
+vol=$(cd $(dirname $0) && pwd)
+echo $vol
+
+#docker run -it -v /Users/danmaq/Projects/servers/danmaq.jekyll/jekyll:/srv/jekyll --name jekyll jekyll/jekyll bash
