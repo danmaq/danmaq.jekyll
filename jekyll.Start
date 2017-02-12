@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# 必要なツールのインストール
+apk --no-cache add openssh-client
+gem install redcarpet
+
+# GitHub 接続のための準備
+cd ~
+git config --global user.name "Jekyll bot by Shuhei Nomura"
+git config --global user.email "info@danmaq.com"
+chmod 700 .ssh
+chmod 600 .ssh/id_rsa
+ssh-keyscan -H github.com > .ssh/known_hosts
+
+# GitHub からクローン
+cd /tmp/
+git clone git@github.com:danmaq/danmaq.articles.git
+git clone git@github.com:danmaq/danmaq.github.io.git
+
+# 記事を全て作業ディレクトリへ
+cp -r /tmp/danmaq.articles/* /srv/jekyll
+cd /srv/jekyll
+
+# ビルド！
+jekyll b
+if [ $? -ne 0 ]; then
+    echo 'Abort.'
+    exit 1
+fi
+
+# 成果物の適用
+cp -r _site/* /tmp/danmaq.github.io/
+cd /tmp/danmaq.github.io
+git add -A
+git commit -m 'Converted from danmaq/danmaq.articles:master'
+git push

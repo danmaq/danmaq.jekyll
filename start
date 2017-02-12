@@ -1,6 +1,18 @@
 #!/bin/sh
 
-vol=$(cd $(dirname $0) && pwd)
-echo $vol
+if [ $# -lt 1 ] || [ ! -e $1 ]; then
+    echo 'Usage: start <private key file>'
+    echo 'example: start ~/.ssh/id_rsa'
+    exit 1
+fi
 
-#docker run -it -v /Users/danmaq/Projects/servers/danmaq.jekyll/jekyll:/srv/jekyll --name jekyll jekyll/jekyll bash
+KEY=`cat $1`
+VSRC=$(cd $(dirname $0) && pwd)/inner
+VDST=/v
+CONTAINER=jekyll
+docker run -d --name ${CONTAINER} jekyll/jekyll sh -c "mkdir /root/.ssh;while true; do sleep 1; done"
+docker cp jekyll.Start ${CONTAINER}:/root
+docker cp $1 ${CONTAINER}:/root/.ssh/
+docker exec -it ${CONTAINER} /root/jekyll.Start
+#docker exec -it jekyll ash
+docker rm -f jekyll
