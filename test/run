@@ -18,7 +18,7 @@ VOL1=${PJHOME}:${DEST}:ro
 
 # ---- SET VOL2 ----
 [ $# -ge 1 ] && VARTICLES=$1 || VARTICLES=${PJHOME}/tmp
-VOL1=${VARTICLES}:/v/danmaq.articles
+VOL2=${VARTICLES}:/v/danmaq.articles
 
 # ---- SET VOL3 ----
 VOL3=${PJHOME}_site:/srv/jekyll/_site
