@@ -6,11 +6,29 @@ if [ $# -lt 1 ] || [ ! -e $1 ]; then
     exit 1
 fi
 
-VSRC=$(cd $(dirname $0) && pwd)
+mkdir -p tmp
+mkdir -p _site
+
+PJHOME=$(cd $(dirname $0)/..; pwd)
+
+# ---- SET VOL1 ----
+VOL1=${PJHOME}:/v/t:ro
+
+# ---- SET VOL2 ----
+if [ $# -ge 1 ]; then
+  VARTICLES=$1
+else
+  VARTICLES=${PJHOME}/tmp
+fi
+VOL2=${VARTICLES}:/v/a:ro
+
+# ---- SET VOL2 ----
+VOL3=${PJHOME}_site:/srv/jekyll/_site
+
 CONTAINER=jekyll
 IMAGE=danmaq/jekyll-git-redcarpet:github-pages
+docker run -d -p 4000:4000 -v ${VOL1} -v ${VOL2} -v ${VOL3} --name ${CONTAINER} ${IMAGE} sh -c "mkdir /root/.ssh;while true; do sleep 1; done"
 
-docker run -d -p 4000:4000 -v ${VSRC}:/v:ro --name ${CONTAINER} ${IMAGE} sh -c "mkdir /root/.ssh;while true; do sleep 1; done"
 IP=`docker-machine ip docker`
 echo "Please open via browser: http://${IP}:4000"
 docker exec -it ${CONTAINER} /v/test/incontainer
