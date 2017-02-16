@@ -15,22 +15,23 @@ PJHOME=$(cd $(dirname $0)/..; pwd)
 VOL1=${PJHOME}:/v/t:ro
 
 # ---- SET VOL2 ----
-if [ $# -ge 1 ]; then
-  VARTICLES=$1
-else
-  VARTICLES=${PJHOME}/tmp
-fi
+[ $# -ge 1 ] && VARTICLES=$1 || VARTICLES=${PJHOME}/tmp
 VOL2=${VARTICLES}:/v/a:ro
 
-# ---- SET VOL2 ----
+# ---- SET VOL3 ----
 VOL3=${PJHOME}_site:/srv/jekyll/_site
 
 CONTAINER=jekyll
 IMAGE=danmaq/jekyll-git-redcarpet:github-pages
-docker run -d -p 4000:4000 -v ${VOL1} -v ${VOL2} -v ${VOL3} --name ${CONTAINER} ${IMAGE} sh -c "mkdir /root/.ssh;while true; do sleep 1; done"
+GIT_NAME='Jekyll bot by Shuhei Nomura'
+GIT_EMAIL='info@danmaq.com'
+LOOP='mkdir /root/.ssh;while true; do sleep 1; done'
+
+docker run -d -p 4000:4000 -v ${VOL1} -v ${VOL2} -v ${VOL3} -e GIT_NAME=${GIT_NAME} -e GIT_EMAIL=${GIT_EMAIL} --name ${CONTAINER} ${IMAGE} sh -c ${LOOP}
 
 IP=`docker-machine ip docker`
 echo "Please open via browser: http://${IP}:4000"
-docker exec -it ${CONTAINER} /v/test/incontainer
+
+docker exec -it ${CONTAINER} /v/t/test/incontainer
 #docker exec -it jekyll ash
 docker rm -f jekyll
