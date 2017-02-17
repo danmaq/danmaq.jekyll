@@ -42,3 +42,4 @@ printf "Please open via browser: \e[1;4mhttp://${IP}:4000\e[m\n"
 docker exec -it ${CONTAINER} ${DEST}/test/incontainer
 #docker exec -it ${CONTAINER} ash
 docker rm -f ${CONTAINER}
+exit 0

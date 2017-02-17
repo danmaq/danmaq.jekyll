@@ -30,9 +30,6 @@ set VOL3=%PJHOME%\_site:/srv/jekyll/_site
 rem ==== SET VOL4 ====
 set VOL4=%USERPROFILE%\.ssh\id_rsa:/root/.ssh/id_rsa:ro
 
-rem ==== SET VOL3 ====
-set VOL3=%PJHOME%\_site:/srv/jekyll/_site
-
 set CONTAINER=jekyll
 set IMAGE=danmaq/jekyll-git-redcarpet:github-pages
 set GIT_NAME="jekyll bot by Shuhei Nomura"
