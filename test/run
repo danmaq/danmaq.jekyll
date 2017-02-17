@@ -1,18 +1,44 @@
 #!/bin/sh
 
-if [ $# -lt 1 ] || [ ! -e $1 ]; then
-    echo 'Usage: start <private key file>'
-    echo 'example: start ~/.ssh/id_rsa'
-    exit 1
+# ---- VALIDATE ----
+if [ `which docker | wc -l` -eq 0 ]; then
+  echo 'Docker service and client are required to run this setup.'
+  exit 1
 fi
 
-VSRC=$(cd $(dirname $0) && pwd)
-CONTAINER=jekyll
-IMAGE=danmaq/jekyll-git-redcarpet
+# ---- CREATE WORKDIR ----
+mkdir -p tmp
+mkdir -p _site
 
-docker run -d -p 4000:4000 -v ${VSRC}:/v:ro --name ${CONTAINER} ${IMAGE} sh -c "mkdir /root/.ssh;while true; do sleep 1; done"
+PJHOME=$(cd $(dirname $0)/..; pwd)
+
+# ---- SET VOL1 ----
+DEST=/v/danmaq.jekyll
+VOL1=${PJHOME}:${DEST}:ro
+
+# ---- SET VOL2 ----
+[ $# -ge 1 ] && VARTICLES=$1 || VARTICLES=${PJHOME}/tmp
+VOL1=${VARTICLES}:/v/danmaq.articles
+
+# ---- SET VOL3 ----
+VOL3=${PJHOME}_site:/srv/jekyll/_site
+
+# ---- SET VOL4 ----
+VOL4=${HOME}/.ssh/id_rsa:/root/.ssh/id_rsa:ro
+
+CONTAINER=jekyll
+IMAGE=danmaq/jekyll-git-redcarpet:github-pages
+GIT_NAME='jekyll bot by Shuhei Nomura'
+GIT_EMAIL='info@danmaq.com'
+LOOP='while true; do sleep 1; done'
+
+docker run -d -p 4000:4000 \
+  -v ${VOL1} -v ${VOL2} -v ${VOL3} -v ${VOL4} \
+  -e GIT_NAME="${GIT_NAME}" -e GIT_EMAIL="${GIT_EMAIL}" \
+  --name ${CONTAINER} ${IMAGE} sh -c "${LOOP}"
+
 IP=`docker-machine ip docker`
-echo "Please open via browser: http://${IP}:4000"
-docker exec -it ${CONTAINER} /v/test/incontainer
-#docker exec -it jekyll ash
-docker rm -f jekyll
+printf "Please open via browser: \e[1;4mhttp://${IP}:4000\e[m\n"
+docker exec -it ${CONTAINER} ${DEST}/test/incontainer
+#docker exec -it ${CONTAINER} ash
+docker rm -f ${CONTAINER}
