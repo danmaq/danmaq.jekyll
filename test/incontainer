@@ -1,23 +1,36 @@
 #!/bin/sh
 
+chmod 700 ~/.ssh/id_rsa
+
 JEKYLL_WORK=/srv/jekyll
 SRC_THEME=/v/danmaq.jekyll
 SRC_ARTICLES=/v/danmaq.articles
 ARTICLES_HEAD=${SRC_ARTICLES}/README.txt
 
-cd /tmp
-if [ -z "`ls ${ARTICLES_HEAD}`" -a `head -n 1 ${ARTICLES_HEAD}` | grep 'Articles' ]; then
-  echo 'Detected theme Articles. Skipping clone from GitHub.'
+mkdir -p ${SRC_THEME}/theme/_includes
+mkdir -p ${SRC_THEME}/theme/_sass
+mkdir -p ${SRC_THEME}/theme/assets
+
+cd /v
+SKIP=1
+if [ -z "`ls ${SRC_ARTICLES}`" ]; then
+    SKIP=0
 else
-  git clone git@github.com:danmaq/danmaq.articles.git
+    if [ -z "`head -n 1 ${ARTICLES_HEAD} | grep 'Articles'`" ]; then
+        SKIP=0
+    fi
 fi
 
+if [ ${SKIP} -eq 0 ]; then
+    rm -rf ${SRC_ARTICLES}/* ${SRC_ARTICLES}/.[^.] ${SRC_ARTICLES}/.??*
+    git clone git@github.com:danmaq/danmaq.articles.git
+fi
+
+cd ${JEKYLL_WORK}
 cp -rf ${SRC_ARTICLES}/_posts ${JEKYLL_WORK}/
 cp -rf ${SRC_ARTICLES}/root/* ${JEKYLL_WORK}/
 cp -rf ${SRC_THEME}/theme/* ${JEKYLL_WORK}/
-
 rm -rf ${JEKYLL_WORK}/_site/*
-cd ${JEKYLL_WORK}
 
 # ビルド！
 jekyll s
