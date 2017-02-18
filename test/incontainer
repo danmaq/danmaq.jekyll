@@ -1,2 +1,23 @@
 #!/bin/sh
 
+JEKYLL_WORK=/srv/jekyll
+SRC_THEME=/v/danmaq.jekyll
+SRC_ARTICLES=/v/danmaq.articles
+ARTICLES_HEAD=${SRC_ARTICLES}/README.txt
+
+cd /tmp
+if [ -z "`ls ${ARTICLES_HEAD}`" -a `head -n 1 ${ARTICLES_HEAD}` | grep 'Articles' ]; then
+  echo 'Detected theme Articles. Skipping clone from GitHub.'
+else
+  git clone git@github.com:danmaq/danmaq.articles.git
+fi
+
+cp -rf ${SRC_ARTICLES}/_posts ${JEKYLL_WORK}/
+cp -rf ${SRC_ARTICLES}/root/* ${JEKYLL_WORK}/
+cp -rf ${SRC_THEME}/theme/* ${JEKYLL_WORK}/
+
+rm -rf ${JEKYLL_WORK}/_site/*
+cd ${JEKYLL_WORK}
+
+# ビルド！
+jekyll s
