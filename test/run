@@ -21,7 +21,7 @@ VOL1=${PJHOME}:${DEST}:ro
 VOL2=$(cd ${VARTICLES}; pwd):/v/danmaq.articles
 
 # ---- SET VOL3 ----
-VOL3=${PJHOME}_site:/srv/jekyll/_site
+VOL3=${PJHOME}/_site:/srv/jekyll/_site
 
 CONTAINER=jekyll
 IMAGE=danmaq/jekyll-git-redcarpet:custom
@@ -38,8 +38,8 @@ docker cp ${HOME}/.ssh/id_rsa ${CONTAINER}:/root/.ssh/id_rsa
 
 IP=`docker-machine ip docker`
 printf "Please open via browser: \e[1;4mhttp://${IP}:4000\e[m\n"
-#docker exec -it ${CONTAINER} ash
-docker exec -it ${CONTAINER} ${DEST}/test/incontainer
+docker exec -it ${CONTAINER} ash
+#docker exec -it ${CONTAINER} ${DEST}/test/incontainer
 #docker exec -it ${CONTAINER} ash
 docker rm -f ${CONTAINER}
 exit 0
