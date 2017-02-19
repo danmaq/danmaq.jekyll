@@ -33,5 +33,8 @@ cp -rf ${SRC_ARTICLES}/root/* ${JEKYLL_WORK}/
 cp -rf ${SRC_THEME}/theme/* ${JEKYLL_WORK}/
 rm -rf ${JEKYLL_WORK}/_site/*
 
+CONF=${JEKYLL_WORK}/_config.yml
+cat ${CONF} | (rm ${CONF}; sed 's/danmaq.github.io/localhost/g' > ${CONF})
+
 # ビルド！
 jekyll s
