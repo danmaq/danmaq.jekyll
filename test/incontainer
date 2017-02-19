@@ -5,9 +5,10 @@ chmod 700 ~/.ssh/id_rsa
 JEKYLL_WORK=/srv/jekyll
 SRC_THEME=/v/danmaq.jekyll
 SRC_ARTICLES=/v/danmaq.articles
-ARTICLES_HEAD=${SRC_ARTICLES}/README.txt
+ARTICLES_HEAD=${SRC_ARTICLES}/README.md
 
 mkdir -p ${SRC_THEME}/theme/_includes
+mkdir -p ${SRC_THEME}/theme/_plugins
 mkdir -p ${SRC_THEME}/theme/_sass
 mkdir -p ${SRC_THEME}/theme/assets
 
