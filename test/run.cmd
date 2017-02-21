@@ -20,28 +20,28 @@ set DEST=/v/danmaq.jekyll
 set VOL1=%PJHOME%:%DEST%:ro
 
 rem ==== SET VOL2 ====
-set VARTICLES=%1
+set VARTICLES=%~f1
 if "%VARTICLES%"=="" set VARTICLES=%PJHOME%\tmp
 set VOL2=%VARTICLES%:/v/danmaq.articles
 
 rem ==== SET VOL3 ====
 set VOL3=%PJHOME%\_site:/srv/jekyll/_site
 
-rem ==== SET VOL4 ====
-set VOL4=%USERPROFILE%\.ssh\id_rsa:/root/.ssh/id_rsa:ro
-
 set CONTAINER=jekyll
-set IMAGE=danmaq/jekyll-git-redcarpet:github-pages
+set IMAGE=danmaq/jekyll-git-redcarpet:custom
 set GIT_NAME="jekyll bot by Shuhei Nomura"
 set GIT_EMAIL="info@danmaq.com"
 set LOOP="while true; do sleep 1; done"
 
+docker build -t %IMAGE% test
 docker run -d -p 4000:4000 ^
-    -v %VOL1% -v %VOL2% -v %VOL3% -v %VOL4% ^
+    -v %VOL1% -v %VOL2% -v %VOL3% ^
     -e GIT_NAME=%GIT_NAME% -e GIT_EMAIL=%GIT_EMAIL% ^
     --name %CONTAINER% %IMAGE% sh -c %LOOP%
-echo "Please open via browser: http://localhost:4000"
+docker cp %USERPROFILE%\.ssh\id_rsa %CONTAINER%:/root/.ssh/id_rsa
 
+echo "Please open via browser: http://localhost:4000"
+rem docker exec -it %CONTAINER% ash
 docker exec -it %CONTAINER% %DEST%/test/incontainer
 rem docker exec -it %CONTAINER% ash
 docker rm -f %CONTAINER%

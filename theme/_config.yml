@@ -1,0 +1,22 @@
+title: danmaq
+email: info@danmaq.com
+description: danmaq は、東方・ボカロおよびオリジナルを中心に、ゲームなど様々なコンテンツを提供する同人ブランドです。
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "http://danmaq.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+twitter_username: danmaq
+github_username:  danmaq
+
+# Build settings
+markdown: redcarpet
+theme: danmaq
+gems:
+  - jekyll-feed
+exclude:
+  - .gitignore
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - wercker.yml
+  - test
+  - test.cmd
+  - test.incontainer
